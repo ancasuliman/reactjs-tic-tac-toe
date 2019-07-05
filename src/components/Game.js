@@ -19,6 +19,18 @@ export class Game extends React.Component {
         const current = history[history.length - 1];
         const squares = current.squares.slice();
 
+        const locations = [
+            [1, 1],
+            [2, 1],
+            [3, 1],
+            [1, 2],
+            [2, 2],
+            [3, 2],
+            [1, 3],
+            [2, 3],
+            [3, 3]
+        ];
+
         if (calculateWinner(squares) || squares[i]) {
             return;
         }
@@ -27,6 +39,7 @@ export class Game extends React.Component {
         this.setState({
             history: history.concat([{
                 squares: squares,
+                location: locations[i]
             }]),
             xIsNext: !this.state.xIsNext,
             stepNumber: history.length,
@@ -47,8 +60,8 @@ export class Game extends React.Component {
 
         const moves = history.map((step, move) => {
             const desc = move ?
-                'Go to move #' + move :
-                'Go to game start';
+                'Go to move #' + move + " @ " + history[move].location
+                : 'Go to game start';
             return (
                 <li key={move}>
                     <button onClick={() => this.jumpTo(move)}>
