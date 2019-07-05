@@ -4,31 +4,39 @@ import {Square} from './Square';
 export class Board extends React.Component {
     renderSquare(i) {
         return (
-            <Square
+            <Square key={i}
                 value={this.props.squares[i]}
                 onClick={() => this.props.onClick(i)}
+                x={i / 3}
+                y={i % 3}
             />
+        );
+    }
+
+    renderRow(start, end) {
+        const length = end - start + 1;
+        const array = Array.from({ length }, (_, i) => start + i);
+
+        return array.map((elem) => this.renderSquare(elem));
+    }
+
+    renderBoard() {
+        return [0, 1, 2].map((value) => {
+            return (
+                <div
+                    className="board-row"
+                    key={value}
+                >
+                    {this.renderRow(value * 3, value * 3 + 2)}
+                </div>
+            )}
         );
     }
 
     render() {
         return (
             <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+                {this.renderBoard()}
             </div>
         );
     }

@@ -9,6 +9,7 @@ export class Game extends React.Component {
             history: [{
                 squares: Array(9).fill(null),
             }],
+            modified: Array(9).fill(null),
             stepNumber: 0,
             xIsNext: true,
         };
@@ -18,6 +19,7 @@ export class Game extends React.Component {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
+        const modified = this.state.modified.slice(0, this.state.stepNumber);
 
         if (calculateWinner(squares) || squares[i]) {
             return;
@@ -30,6 +32,7 @@ export class Game extends React.Component {
             }]),
             xIsNext: !this.state.xIsNext,
             stepNumber: history.length,
+            modified: modified.concat(i)
         });
     }
 
@@ -43,6 +46,7 @@ export class Game extends React.Component {
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
+        const modified = this.state.modified.slice(0, this.state.stepNumber);
         const winner = calculateWinner(current.squares);
 
         const moves = history.map((step, move) => {
@@ -56,6 +60,20 @@ export class Game extends React.Component {
                     </button>
                 </li>
             );
+        });
+
+        const movePairs = history.map((step, move) => {
+            const lastSquare = modified[move];
+            const x = Math.trunc(lastSquare / 3);
+            const y = lastSquare % 3;
+            const desc = `Last move was (${x}, ${y})`;
+
+            if (lastSquare !== null)
+                return (
+                <li key={move}>
+                    {desc}
+                </li>
+                );
         });
 
         let status;
@@ -76,6 +94,10 @@ export class Game extends React.Component {
                 <div className="game-info">
                     <div>{status}</div>
                     <ol>{moves}</ol>
+                </div>
+                <div className="moves-info">
+                    <div>List of moves:</div>
+                    <ol>{movePairs}</ol>
                 </div>
             </div>
         );
